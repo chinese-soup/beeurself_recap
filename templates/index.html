@@ -20,8 +20,9 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<body>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<body>
 
 <div id="fullpage">
     <div class="section" id="section0">
@@ -46,11 +47,10 @@
     </div>
     <div class="section" id="section1">
             <div class="intro fade-in-paragraph">
-                <h2>&#127744; BeeUrself Top Posters of 2023 &#127744;</h2>
+                <h2>BeeUrself Top Posters of 2023 </h2>
                 <p>&#127942; Drumroll, please! It's time to celebrate our stellar top posters who've made waves in the
                     2020
                     Poopsman community! &#127942;</p>
-                <p>&#127937; See how you've stacked up!</p>
             </div>
             <div class="container">
                 <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
@@ -70,11 +70,10 @@
                         <!-- medal emoji -->
                         {% if place > 0 and place < 4 %}&#12935{{ place }};
                         {% else %}{{ place }}{% endif %}
-
                     </div>
                     <div class="col">
                         <img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"
-                             onerror="this.onerror=null;this.src='static/bee.jpg';>
+                             onerror="this.onerror=null;this.src='static/bee.jpg'">
                         {{ poster }}
                     </div>
                     <div class="col">{{ count }}</div>
@@ -84,15 +83,15 @@
     </div>
     <div class="section" id="section2">
         <div class="intro fade-in-paragraph">
-            <h2>&#x270D;&#xFE0F; These people really loved captions! &#x270D;&#xFE0F; </h2>
-            </div>
+            <h2>&#x270D;&#xFE0F; These people really loved captions! ❤️&#x270D;&#xFE0F; </h2>
+        </div>
             <table>
                 <thead>
                 <tr>
                     <th>#</th>
                     <th>Avatar</th>
                     <th>Nickname</th>
-                    <th>Number of Posts</th>
+                    <th>Number of posts with a caption</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,7 +99,8 @@
                 {% if count != 0 %}
                 <tr class="fade-in-paragraph">
                     <td>{{ place }}</td>
-                    <td><img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"></td>
+                    <td>  <img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"
+                             onerror="this.onerror=null;this.src='static/bee.jpg'"></td>
                     <td>{{ poster }}</td>
                     <td>{{ count }}</td>
                 </tr>
@@ -108,25 +108,39 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <p>&#x270D;&#xFE0F; Didn't make the cut? Guess you need to describe your life more!
+            <p class="fade-in-paragraph">&#x270D;&#xFE0F; Didn't make the cut? Guess you need to describe your life more!
                 &#x270D;&#xFE0F; </p>
         </div>
+        <div class="section" id="section3">
+            <div>
+                <h1>Posted Late vs Posted on Time</h1>
+                <canvas id="pieChartLatePosts"></canvas>
+            </div>
+        </div>
+        <div class="section" id="section4">
+                <div class="intro">
+                    <h1 class="dark">Activity per months</h1>
+                    <p class="dark">In <strong>February</strong> we were Beeing Ourselves the most!</p>
+                </div>
+                <canvas id="barChartMonthly" width="500"></canvas>
+
+
+        </div>
     </div>
+
 </div>
 </body>
 </html>
 
 <script>
-
-
     var myFullpage = new fullpage('#fullpage', {
         // Navigation
         menu: '#menu',
         lockAnchors: false,
-        anchors: ['welcomePage', 'topPosters', 'topCaptions'],
+        anchors: ['welcomePage', 'topPosters', 'topCaptions', 'lateOrOnTime', 'topMonths'],
         navigation: true,
         navigationPosition: 'right',
-        navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users'],
+        navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users', 'On Time or Late?', 'Top active months'],
         showActiveTooltip: true,
         slidesNavigation: true,
         slidesNavPosition: 'bottom',
@@ -170,7 +184,7 @@
             '<div class="fp-arrow"></div>  &darr;'
         ],
         verticalCentered: true,
-        sectionsColor: ['#ccc', '#2B2E30', '#4B4E30' ],
+        sectionsColor: ['#ccc', '#2B2E30', '#7a7677', '#2B2E30', '#ccc',],
         paddingTop: '3em',
         paddingBottom: '10px',
         fixedElements: '#header, .footer',
@@ -209,7 +223,6 @@
         onScrollOverflow: function(section, slide, position, direction){}
     });
 
-
     function startFadeIn(whichSection) {
       let paragraphs = $("#" + whichSection).find('.fade-in-paragraph');
       paragraphs.each(function(index) {
@@ -221,8 +234,81 @@
     }
 
 
+    const ctxPie = document.getElementById('pieChartLatePosts');
+    const ctx = document.getElementById('barChartMonthly');
 
 
+        new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
+          'November', 'December'],
+          datasets: [
+             
+              {% for nick, items in GROUPED_BY_MONTHS.items() %}
+              {              
+                label: "{{ nick }}",
+                data: [
+                  {% for month in items %}
+                  {
+                    x: '{{ month }}',
+                    y: '{{ items[month]|length  }}',
+                  },
+                  {% endfor %}
+                ],
+              },
+              {% endfor %}
+                
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              stacked: true,
+            },
+            x: {
+              stacked: true,
+            }
+          },
+          plugins: {
+            legend: {
+                labels: {
+                    color: "black",
+                }
+            }
+          },
+          responsive: true,
+        },
 
+        });
 
+        new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+          labels: ['Posted on time', 'Posted late'],
+          datasets: [{
+            label: '# of BeeUrselfs posted',
+            data: [{{ posted_on_time_count }}, {{ posted_late_count }}],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          plugins: {
+            datalabels: {
+              formatter: (value, ctx) => {
+                let sum = ctx.dataset._meta[0].total;
+                let percentage = (value * 100 / sum).toFixed(2) + "%";
+                return percentage;
+              },
+              color: '#fff',
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+        });
 </script>

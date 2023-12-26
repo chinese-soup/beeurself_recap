@@ -1,57 +1,48 @@
 #!/usr/bin/env python3
-
+import calendar
 import json
 import re
 import sys
-from collections import defaultdict
-from dataclasses import dataclass, field
+from collections import defaultdict, Counter
+from datetime import datetime
 from typing import List, Optional
-
-from dataclass_wizard import JSONWizard
+from model import Message
 
 BOT_NICKNAME = "🐝UrselfBot"
 BOT_USERID = "user5401852593"
 JSON_STR = ""
 bot_messages = []
 
-
 """
 IDEAS:
 
 Global:
 - Top 3 days when ppl posted the most
+---- Most ppl posted on <MONDAY/TUESDAY/..etc>
 - Top 3 most reactions
+- Some graphs
+--- https://www.chartjs.org/docs/latest/samples/bar/stacked-groups.html
+---- TODO: need to expose the real data to JS for these -- mightj ust send it to the template, lmao
+--- XKCD Plotlib?
+---
+--- Heatmap of the year
+--- How late were you
 
 Per user:
+-- RECAP CALENDAR --- Heatmap of their postings
+-- RECAP VIDEO (ffmpeg shit, slow and FAST and end)
 - BeeUrself you've got the most reacts on
-- 
+- How on Time were you 
+-- Percentage how on time (graph?)
+-- How top % poster were you (or at least position)
+
+
+Colfra:
+--- 0% of your beerselfs included your face 
+
+
 """
 
-
-@dataclass
-class TextEntity:
-    type: str
-    text: str
-
-
-@dataclass
-class Message:
-    id: int
-    type: str
-    from_nickname: str
-    from_id: str
-    text: str
-    text_entities: List[TextEntity]
-    date: Optional[str] = None
-    date_unixtime: Optional[str] = None
-    edited: Optional[str] = None
-    edited_unixtime: Optional[str] = None
-    reply_to_message_id: Optional[int] = None
-    photo: Optional[str] = None
-    width: Optional[int] = None
-    height: Optional[int] = None
-    # There's more, but we only care about BeeUrself bot's messages,
-    # so let's skip it
 
 
 with open("poopsman.json", "r") as f:
@@ -63,13 +54,33 @@ messages = j.get("messages")
 grouped_by_nickname = defaultdict(list)
 
 
+def get_placements(sorted_data):
+    placements = {}
+    current_position = 1
+    current_count = None
+
+    for index, (username, count) in enumerate(sorted_data):
+        if count != current_count:
+            current_position = index + 1
+            current_count = count
+        placements[username] = current_position
+
+    # Convert tuples to lists and add placement as the third item
+    lists_with_placement = [
+        [placements[username], username, count] for username, count in sorted_data
+    ]
+
+    return lists_with_placement
+
+
 def replace_nickname(input_nick):
     users = {
         "Egg": ["Egg", "eggu"],
         "Chinese_soup": ["Soup", "冰淇淋"],
         "Lo1ts": ["nick"],
         "Wakecold": ["Leonid", "Леонид"],
-        "Colfar": ["Tamogolfra"],
+        "Colfra": ["Tamogolfra", "Colfra"],
+        "Tomsk": ["Andrei"]
     }
     for main, sublist in users.items():
         if input_nick in sublist:
@@ -90,6 +101,8 @@ for msg_data in messages:
         #    print("Nice bot, bro", message.text_entities[-1], message.date_unixtime, message.photo)
         if len(message.text_entities) == 0:
             continue
+        if int(message.date_unixtime) < 1672527600:
+            continue # Skip anything that's before January 2023
 
         last_text_entity = message.text_entities[-1]["text"]
 
@@ -156,7 +169,10 @@ for msg_data in messages:
 
         nickname = replace_nickname(nickname)
 
-        data = {"timestamp": message.date, "caption": caption, "late_time": late_time}
+        unix_timestamp = float(message.date_unixtime)
+        date_obj = datetime.fromtimestamp(unix_timestamp)
+
+        data = {"timestamp": message.date, "unix_ts": unix_timestamp, "datetime": date_obj, "caption": caption, "late_time": late_time, "nickdupe": nickname}
         grouped_by_nickname[nickname].append(data)
 
         # print(message.from_nickname, message.from_id, message.date_unixtime)
@@ -167,7 +183,62 @@ for msg_data in messages:
         # print(f"Missed this message = {e} {msg_data}")
         pass
 
-
-from pprint import pprint
+from pprint import pprint, pformat
 
 pprint(grouped_by_nickname)
+
+HOW_MANY_BEEURSELFS = defaultdict(int)
+CAPTIONS_COUNT_GROUPED_BY = defaultdict(int)
+LIST_OF_ALL_BEEURSELFS_COMBINED = sum(grouped_by_nickname.values(), [])
+
+
+def group_by_months(all_posts: List):
+    grouped_by_month_dict = defaultdict(lambda: defaultdict(list))
+
+    for d in all_posts:
+        date_obj = d["datetime"]  # Assuming date_obj is a datetime object
+        month = calendar.month_name[date_obj.month]
+        d.pop("datetime")
+        nickname = d["nickdupe"]
+        # Append the dict to the corresponding month key in the organized_dict
+        grouped_by_month_dict[nickname][month].append(d)
+
+    # If you want to sort each month's list of dicts by timestamp, you can do this:
+
+    #for month, nicknames in grouped_by_month_dict.items():
+        #   for nickname, values in nicknames.items():
+    #   grouped_by_month_dict[nickname][month] = sorted(values, key=lambda x: x["unix_ts"])
+    # Now, organized_dict contains dicts organized by month
+    return grouped_by_month_dict
+
+GROUPED_BY_MONTHS = group_by_months(LIST_OF_ALL_BEEURSELFS_COMBINED)
+
+POSTED_LATE = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get('late_time') != '']
+POSTED_ON_TIME = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get('late_time') == '']
+
+for nickname, list_of_beeurselfs in grouped_by_nickname.items():
+    HOW_MANY_BEEURSELFS[nickname] = len(list_of_beeurselfs)
+    CAPTIONS_COUNT_GROUPED_BY[nickname] = sum(1 for b in list_of_beeurselfs if b["caption"] != "")
+
+sorted_post_count_per_nickname = list(sorted(HOW_MANY_BEEURSELFS.items(), key=lambda x: x[1], reverse=True))
+sorted_caption_count_per_nickname = list(sorted(CAPTIONS_COUNT_GROUPED_BY.items(), key=lambda x: x[1], reverse=True))
+
+sorted_post_count_per_nickname = get_placements(sorted_post_count_per_nickname)
+sorted_caption_count_per_nickname = get_placements(sorted_caption_count_per_nickname)
+
+
+with open("rofl.py", "w") as writef:
+    writef.write(f"import datetime")
+    writef.write(f"\n\n")
+    writef.write(f"sorted_post_count_per_nickname = {pformat(sorted_post_count_per_nickname)}")
+    writef.write("\n\n")
+    writef.write(f"sorted_caption_count_per_nickname = {pformat(sorted_caption_count_per_nickname)}")
+    writef.write("\n\n")
+    writef.write(f"posted_late_count = {len(POSTED_LATE)}")
+    writef.write("\n\n")
+    writef.write(f"posted_on_time_count = {len(POSTED_ON_TIME)}")
+    writef.write("\n\n")
+    #writef.write(f"GROUPED_BY_MONTHS = {GROUPED_BY_MONTHS}")
+
+with open("grouped_by_nicknames_and_by_months.json", "w") as groupedfp:
+    json.dump(GROUPED_BY_MONTHS, groupedfp)
