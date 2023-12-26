@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Top Posters - YouTube Rewind Style</title>
+  <link rel="stylesheet" href="static/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet"></head>
+
+<link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css">
+<link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/black.css">
+<body>
+
+  <header class="fancy-header">
+    <div class="background-image"></div>
+    <div class="header-content">
+      <img src="static/bee.jpg" alt="Round Image" class="round-image"><br>
+      <h1>BeeUrself 2023 recap for 2020 Poopsman!</h1>
+    </div>
+  </header>
+  <div class="container">
+    <p>As we bid adieu to another incredible year, let's take a nostalgic flight through the hive of memories we've built together with BeeUrself! &#127744;&#128248;&#128103;</p>
+
+    <p>&#128247; Creating Our Rewind: As we look back at our year in moments, it's not just about the photos but the emotions, connections, and memories they hold. Each click was a brushstroke in the masterpiece of our shared journey.</p>
+
+    <h2>&#127744; BeeUrself Top Posters of 2023 &#127744;</h2>
+        <p>&#127942; Drumroll, please! It's time to celebrate our stellar top posters who've made waves in the 2020 Poopsman community! &#127942;</p>
+        <p>&#127937; See where you've ended up!</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Avatar</th>
+            <th>Nickname</th>
+            <th>Number of Posts</th>
+          </tr>
+        </thead>
+        <tbody>
+           {% for place, poster, count in top_posters %}
+                <tr>
+                 <td>{{ place }}</td>
+                  <td><img src="{{ users[poster].avatar }}" alt="Avatar" class="avatar"></td>
+                  <td>{{ poster }}</td>
+                  <td>{{ count }} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+    <h2>&#x270D;&#xFE0F; These people really loved captions! &#x270D;&#xFE0F; </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Avatar</th>
+            <th>Nickname</th>
+            <th>Number of Posts</th>
+          </tr>
+        </thead>
+        <tbody>
+           {% for place, poster, count in top_captions %}
+            {% if count != 0 %}
+                <tr>
+                 <td>{{ place }}</td>
+                  <td><img src="{{ users[poster].avatar }}" alt="Avatar" class="avatar"></td>
+                  <td>{{ poster }}</td>
+                  <td>{{ count }} </td>
+                </tr>
+           {% endif %}
+            {% endfor %}
+        </tbody>
+      </table>
+      <p>&#x270D;&#xFE0F; Didn't make the it to the table? Guess you need to describe your life more! &#x270D;&#xFE0F; </p>
+  </div>
+
+</body>
+</html>

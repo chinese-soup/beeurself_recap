@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  font-family: 'Montserrat', sans-serif;
+}
+.container {
+  width: 80%;
+  margin: 20px auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #f2f2f2;
+}
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#section0 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  color: white;
+  background-image: url('./poopman.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  text-align: center;
+}
+
+.round-image {
+  width: 200px; /* Adjust size of the round image */
+  height: 200px; /* Keep width and height the same for a perfect circle */
+  border-radius: 50%; /* Creates a round shape */
+  object-fit: cover;
+  border: 4px solid white; /* Optional: Add a border around the image */
+}

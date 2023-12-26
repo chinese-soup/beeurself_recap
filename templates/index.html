@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BeeUrself 2023</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.css"
+          integrity="sha512-wCVOuVtxsXqrQK7tj9j4BvyfITQmpp7UE7mVilD7aieGLYFEIAa5UKTP1RapOf6dxQ9JIKAneakcyykWG4r4Ow=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"
+            integrity="sha512-LGiXf+jHGTHcIybSsOWO3I/in+OObCkcEsWIZ7IyhzfD6RzD5qDUw2CK+JveuI7zTSEcDG//bIOvOpAJW2BWsg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.extensions.min.js"
+            integrity="sha512-i0+IGP2OBJG5Lioj9FaBr30x7Ci39dWQb8BhSd8J86p48OgctpfXXq0hG6cmCbCkKh4tn335pz9b3seChGFdKw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<body>
+
+
+<div id="fullpage">
+    <div class="section" id="section0">
+
+        <img src="static/bee.jpg" alt="Round Image" class="round-image">
+        <h1>BeeUrself 2023 recap for 2020 Poopsman!</h1>
+        <div class="header-content">
+            <p>As we bid adieu to another incredible year, let's take a nostalgic flight through the hive of memories
+                we've
+                built together with BeeUrself! &#127744;&#128248;&#128103;</p>
+
+            <p>&#128247; Creating Our Rewind: As we look back at our year in moments, it's not just about the photos but
+                the
+                emotions, connections, and memories they hold. Each click was a brushstroke in the masterpiece of our
+                shared
+                journey.</p>
+        </div>
+        <div class="background-image"></div>
+    </div>
+    <div class="section" id="section1">
+        <div class="intro">
+            <h2>&#127744; BeeUrself Top Posters of 2023 &#127744;</h2>
+            <p>&#127942; Drumroll, please! It's time to celebrate our stellar top posters who've made waves in the 2020
+                Poopsman community! &#127942;</p>
+            <p>&#127937; See where you've ended up!</p>
+        </div>
+        <div class="container">
+
+            {% for place, poster, count in top_posters %}
+            <div class="row">
+                <div class="col">{{ place }}</div>
+                <div class="col">
+                    <img src="{{ users[poster].avatar }}" alt="Avatar" class="avatar">
+                </div>
+                <div class="col">{{ poster }}</div>
+                <div class="col">{{ count }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="section" id="section2">
+        <div class="intro">
+
+            <h2>&#x270D;&#xFE0F; These people really loved captions! &#x270D;&#xFE0F; </h2>
+            <p>&#x270D;&#xFE0F; Didn't make the cut? Guess you need to describe your life more!
+                &#x270D;&#xFE0F; </p>
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Avatar</th>
+                    <th>Nickname</th>
+                    <th>Number of Posts</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for place, poster, count in top_captions %}
+                {% if count != 0 %}
+                <tr>
+                    <td>{{ place }}</td>
+                    <td><img src="{{ users[poster].avatar }}" alt="Avatar" class="avatar"></td>
+                    <td>{{ poster }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+		var myFullpage = new fullpage('#fullpage', {
+			// Navigation
+			menu: '#menu',
+			lockAnchors: false,
+			anchors:['firstPage', 'secondPage'],
+			navigation: false,
+			navigationPosition: 'right',
+			navigationTooltips: ['firstSlide', 'secondSlide'],
+			showActiveTooltip: false,
+			slidesNavigation: false,
+			slidesNavPosition: 'bottom',
+
+			// Scrolling
+			css3: true,
+			scrollingSpeed: 700,
+			autoScrolling: true,
+			fitToSection: true,
+			fitToSectionDelay: 600,
+			scrollBar: false,
+			easing: 'easeInOutCubic',
+			easingcss3: 'ease',
+			loopBottom: false,
+			loopTop: false,
+			loopHorizontal: true,
+			continuousVertical: false,
+			continuousHorizontal: false,
+			scrollHorizontally: true,
+			interlockedSlides: false,
+			dragAndMove: false,
+			offsetSections: false,
+			resetSliders: false,
+			fadingEffect: false,
+			normalScrollElements: '#element1, .element2',
+			scrollOverflow: true,
+			scrollOverflowMacStyle: false,
+			scrollOverflowReset: false,
+			touchSensitivity: 15,
+			bigSectionsDestination: null,
+
+			// Accessibility
+			keyboardScrolling: true,
+			animateAnchor: true,
+			recordHistory: true,
+
+			// Design
+			controlArrows: true,
+			controlArrowsHTML: [
+				'<div class="fp-arrow"></div>',
+				'<div class="fp-arrow"></div>'
+			],
+			verticalCentered: true,
+			sectionsColor : ['#ccc', '#fff'],
+			paddingTop: '3em',
+			paddingBottom: '10px',
+			fixedElements: '#header, .footer',
+			responsiveWidth: 0,
+			responsiveHeight: 0,
+			responsiveSlides: false,
+			parallax: true,
+			parallaxOptions: {type: 'reveal', percentage: 62, property: 'translate'},
+			dropEffect: false,
+			dropEffectOptions: { speed: 2300, color: '#F82F4D', zIndex: 9999},
+			waterEffect: false,
+			waterEffectOptions: { animateContent: true, animateOnMouseMove: true},
+			cards: true,
+			cardsOptions: {perspective: 100, fadeContent: true, fadeBackground: true},
+
+			// Custom selectors
+			sectionSelector: '.section',
+			slideSelector: '.slide',
+
+			lazyLoading: true,
+			observer: true,
+			credits: { enabled: true, label: 'Made with fullPage.js', position: 'right'},
+
+			// Events
+			beforeLeave: function(origin, destination, direction, trigger){},
+			onLeave: function(origin, destination, direction, trigger){},
+			afterLoad: function(origin, destination, direction, trigger){},
+			afterRender: function(){},
+			afterResize: function(width, height){},
+			afterReBuild: function(){},
+			afterResponsive: function(isResponsive){},
+			afterSlideLoad: function(section, origin, destination, direction, trigger){},
+			onSlideLeave: function(section, origin, destination, direction, trigger){},
+			onScrollOverflow: function(section, slide, position, direction){}
+		});
+
+
+
+</script>
