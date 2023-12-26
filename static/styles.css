@@ -1,8 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
   font-family: 'Montserrat', sans-serif;
+
 }
 .container {
   width: 80%;
@@ -19,13 +19,21 @@ th, td {
   text-align: left;
 }
 th {
-  background-color: #f2f2f2;
+  background-color: rgb(48, 48, 48);
+  color: white;
 }
+
+.header-content > p {
+    margin-left: 25%;
+    margin-right: 25%;
+}
+
 .avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid rgb(20, 20, 20); /* Optional: Add a border around the image */
 }
 
 #section0 {
@@ -41,6 +49,14 @@ th {
   background-repeat: no-repeat;
   padding: 20px;
   text-align: center;
+
+}
+
+.section {
+  justify-content: center;
+  align-items: center;
+  /*background-color: rgb(43, 46, 48) !important;*/
+  color: white;
 }
 
 .round-image {
@@ -49,4 +65,16 @@ th {
   border-radius: 50%; /* Creates a round shape */
   object-fit: cover;
   border: 4px solid white; /* Optional: Add a border around the image */
+}
+
+.fade-in-paragraph {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+.fade-in {
+  opacity: 1;
+}
+
+h1 {
+    padding: 5px
 }

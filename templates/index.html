@@ -11,15 +11,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"
             integrity="sha512-LGiXf+jHGTHcIybSsOWO3I/in+OObCkcEsWIZ7IyhzfD6RzD5qDUw2CK+JveuI7zTSEcDG//bIOvOpAJW2BWsg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.extensions.min.js"
-            integrity="sha512-i0+IGP2OBJG5Lioj9FaBr30x7Ci39dWQb8BhSd8J86p48OgctpfXXq0hG6cmCbCkKh4tn335pz9b3seChGFdKw=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <body>
 
 
@@ -29,45 +29,63 @@
         <img src="static/bee.jpg" alt="Round Image" class="round-image">
         <h1>BeeUrself 2023 recap for 2020 Poopsman!</h1>
         <div class="header-content">
-            <p>As we bid adieu to another incredible year, let's take a nostalgic flight through the hive of memories
+            <p>As we say goodbye to another incredible year, let's take a nostalgic flight through the hive of memories
                 we've
-                built together with BeeUrself! &#127744;&#128248;&#128103;</p>
-
-            <p>&#128247; Creating Our Rewind: As we look back at our year in moments, it's not just about the photos but
-                the
-                emotions, connections, and memories they hold. Each click was a brushstroke in the masterpiece of our
-                shared
-                journey.</p>
+                built together with <strong>BeeUrself</strong>! &#127744;&#128248;&#128103;</p>
+            <p> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>
+            </svg>
+                Scroll
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>
+            </svg>
+            </a>
+            </p>
         </div>
         <div class="background-image"></div>
     </div>
     <div class="section" id="section1">
-        <div class="intro">
-            <h2>&#127744; BeeUrself Top Posters of 2023 &#127744;</h2>
-            <p>&#127942; Drumroll, please! It's time to celebrate our stellar top posters who've made waves in the 2020
-                Poopsman community! &#127942;</p>
-            <p>&#127937; See where you've ended up!</p>
-        </div>
-        <div class="container">
-
-            {% for place, poster, count in top_posters %}
-            <div class="row">
-                <div class="col">{{ place }}</div>
-                <div class="col">
-                    <img src="{{ users[poster].avatar }}" alt="Avatar" class="avatar">
-                </div>
-                <div class="col">{{ poster }}</div>
-                <div class="col">{{ count }}</div>
+            <div class="intro fade-in-paragraph">
+                <h2>&#127744; BeeUrself Top Posters of 2023 &#127744;</h2>
+                <p>&#127942; Drumroll, please! It's time to celebrate our stellar top posters who've made waves in the
+                    2020
+                    Poopsman community! &#127942;</p>
+                <p>&#127937; See how you've stacked up!</p>
             </div>
-            {% endfor %}
+            <div class="container">
+                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
+                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
+                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
+                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
+                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
+                <!--<button onclick="startFadeIn('section1');">Start Fading</button>-->
+                <div class="row fade-in-paragraph">
+                    <div class="col"><h4>Place</h4></div>
+                    <div class="col"><h4>Nickname</h4></div>
+                    <div class="col"><h4>Number of posted BeeUrselfs</h4></div>
+                </div>
+                {% for place, poster, count in top_posters %}
+                <div class="row fade-in-paragraph">
+                    <div class="col">
+                        <!-- medal emoji -->
+                        {% if place > 0 and place < 4 %}&#12935{{ place }};
+                        {% else %}{{ place }}{% endif %}
+
+                    </div>
+                    <div class="col">
+                        <img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"
+                             onerror="this.onerror=null;this.src='static/bee.jpg';>
+                        {{ poster }}
+                    </div>
+                    <div class="col">{{ count }}</div>
+                </div>
+                {% endfor %}
         </div>
     </div>
     <div class="section" id="section2">
-        <div class="intro">
-
+        <div class="intro fade-in-paragraph">
             <h2>&#x270D;&#xFE0F; These people really loved captions! &#x270D;&#xFE0F; </h2>
-            <p>&#x270D;&#xFE0F; Didn't make the cut? Guess you need to describe your life more!
-                &#x270D;&#xFE0F; </p>
+            </div>
             <table>
                 <thead>
                 <tr>
@@ -80,9 +98,9 @@
                 <tbody>
                 {% for place, poster, count in top_captions %}
                 {% if count != 0 %}
-                <tr>
+                <tr class="fade-in-paragraph">
                     <td>{{ place }}</td>
-                    <td><img src="{{ users[poster].avatar }}" alt="Avatar" class="avatar"></td>
+                    <td><img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"></td>
                     <td>{{ poster }}</td>
                     <td>{{ count }}</td>
                 </tr>
@@ -90,6 +108,8 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <p>&#x270D;&#xFE0F; Didn't make the cut? Guess you need to describe your life more!
+                &#x270D;&#xFE0F; </p>
         </div>
     </div>
 </div>
@@ -97,93 +117,111 @@
 </html>
 
 <script>
-		var myFullpage = new fullpage('#fullpage', {
-			// Navigation
-			menu: '#menu',
-			lockAnchors: false,
-			anchors:['firstPage', 'secondPage'],
-			navigation: false,
-			navigationPosition: 'right',
-			navigationTooltips: ['firstSlide', 'secondSlide'],
-			showActiveTooltip: false,
-			slidesNavigation: false,
-			slidesNavPosition: 'bottom',
 
-			// Scrolling
-			css3: true,
-			scrollingSpeed: 700,
-			autoScrolling: true,
-			fitToSection: true,
-			fitToSectionDelay: 600,
-			scrollBar: false,
-			easing: 'easeInOutCubic',
-			easingcss3: 'ease',
-			loopBottom: false,
-			loopTop: false,
-			loopHorizontal: true,
-			continuousVertical: false,
-			continuousHorizontal: false,
-			scrollHorizontally: true,
-			interlockedSlides: false,
-			dragAndMove: false,
-			offsetSections: false,
-			resetSliders: false,
-			fadingEffect: false,
-			normalScrollElements: '#element1, .element2',
-			scrollOverflow: true,
-			scrollOverflowMacStyle: false,
-			scrollOverflowReset: false,
-			touchSensitivity: 15,
-			bigSectionsDestination: null,
 
-			// Accessibility
-			keyboardScrolling: true,
-			animateAnchor: true,
-			recordHistory: true,
+    var myFullpage = new fullpage('#fullpage', {
+        // Navigation
+        menu: '#menu',
+        lockAnchors: false,
+        anchors: ['welcomePage', 'topPosters', 'topCaptions'],
+        navigation: true,
+        navigationPosition: 'right',
+        navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users'],
+        showActiveTooltip: true,
+        slidesNavigation: true,
+        slidesNavPosition: 'bottom',
 
-			// Design
-			controlArrows: true,
-			controlArrowsHTML: [
-				'<div class="fp-arrow"></div>',
-				'<div class="fp-arrow"></div>'
-			],
-			verticalCentered: true,
-			sectionsColor : ['#ccc', '#fff'],
-			paddingTop: '3em',
-			paddingBottom: '10px',
-			fixedElements: '#header, .footer',
-			responsiveWidth: 0,
-			responsiveHeight: 0,
-			responsiveSlides: false,
-			parallax: true,
-			parallaxOptions: {type: 'reveal', percentage: 62, property: 'translate'},
-			dropEffect: false,
-			dropEffectOptions: { speed: 2300, color: '#F82F4D', zIndex: 9999},
-			waterEffect: false,
-			waterEffectOptions: { animateContent: true, animateOnMouseMove: true},
-			cards: true,
-			cardsOptions: {perspective: 100, fadeContent: true, fadeBackground: true},
+        // Scrolling
+        css3: true,
+        scrollingSpeed: 600,
+        autoScrolling: true,
+        fitToSection: true,
+        fitToSectionDelay: 400,
+        scrollBar: false,
+        easing: 'easeInOutCubic',
+        easingcss3: 'ease',
+        loopBottom: false,
+        loopTop: false,
+        loopHorizontal: true,
+        continuousVertical: false,
+        continuousHorizontal: false,
+        scrollHorizontally: false,
+        interlockedSlides: false,
+        dragAndMove: false,
+        offsetSections: false,
+        resetSliders: false,
+        fadingEffect: false,
+        normalScrollElements: '#element1, .element2',
+        scrollOverflow: true,
+        scrollOverflowMacStyle: false,
+        scrollOverflowReset: false,
+        touchSensitivity: 15,
+        bigSectionsDestination: null,
 
-			// Custom selectors
-			sectionSelector: '.section',
-			slideSelector: '.slide',
+        // Accessibility
+        keyboardScrolling: true,
+        animateAnchor: true,
+        recordHistory: true,
 
-			lazyLoading: true,
-			observer: true,
-			credits: { enabled: true, label: 'Made with fullPage.js', position: 'right'},
+        // Design
+        controlArrows: true,
+        controlArrowsHTML: [
+            '<div class="fp-arrow"></div>&uarr;',
+            '<div class="fp-arrow"></div>  &darr;'
+        ],
+        verticalCentered: true,
+        sectionsColor: ['#ccc', '#2B2E30', '#4B4E30' ],
+        paddingTop: '3em',
+        paddingBottom: '10px',
+        fixedElements: '#header, .footer',
+        responsiveWidth: 0,
+        responsiveHeight: 0,
+        responsiveSlides: false,
+        parallax: false,
+        parallaxOptions: {type: 'reveal', percentage: 62, property: 'translate'},
+        dropEffect: false,
+        dropEffectOptions: { speed: 2300, color: '#F82F4D', zIndex: 9999},
+        waterEffect: false,
+        waterEffectOptions: { animateContent: true, animateOnMouseMove: true},
+        cards: false,
+        cardsOptions: {perspective: 100, fadeContent: true, fadeBackground: true},
 
-			// Events
-			beforeLeave: function(origin, destination, direction, trigger){},
-			onLeave: function(origin, destination, direction, trigger){},
-			afterLoad: function(origin, destination, direction, trigger){},
-			afterRender: function(){},
-			afterResize: function(width, height){},
-			afterReBuild: function(){},
-			afterResponsive: function(isResponsive){},
-			afterSlideLoad: function(section, origin, destination, direction, trigger){},
-			onSlideLeave: function(section, origin, destination, direction, trigger){},
-			onScrollOverflow: function(section, slide, position, direction){}
-		});
+        // Custom selectors
+        sectionSelector: '.section',
+        slideSelector: '.slide',
+
+        lazyLoading: true,
+        observer: true,
+        credits: { enabled: true, label: 'Made with fullPage.js', position: 'right'},
+
+        // Events
+
+        afterLoad: function(origin, destination, direction, trigger) {
+            var index = destination.index;
+            console.log(destination.index);
+            startFadeIn("section" + index);
+        },
+
+        onLeave: function(origin, destination, direction, trigger){
+            var leavingSection = this;
+
+        },
+        onScrollOverflow: function(section, slide, position, direction){}
+    });
+
+
+    function startFadeIn(whichSection) {
+      let paragraphs = $("#" + whichSection).find('.fade-in-paragraph');
+      paragraphs.each(function(index) {
+        let paragraph = $(this);
+        setTimeout(function() {
+          paragraph.addClass('fade-in');
+        }, 300 * index);
+      });
+    }
+
+
+
 
 
 
