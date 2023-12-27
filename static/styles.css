@@ -82,3 +82,55 @@ h1 {
 .dark {
     color: #202020;
 }
+
+.animated-gradient {
+  width: 10px;
+  height: 16px;
+  background: linear-gradient(45deg, #FFC0CB, #87CEFA, #FFA07A);
+  background-size: 600% 600%;
+  transition: width 2s ease-in-out;
+  border-radius: 4px;
+}
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+.animate {
+  animation: gradientAnimation 10s ease infinite;
+}
+
+#top-posters-1 {
+    font-size: 36px;
+}
+#top-posters-1 img{
+    width: 80px;
+    height: 80px;
+}
+
+#top-posters-2 {
+    font-size: 36px;
+}
+#top-posters-2 img {
+    width: 70px;
+    height: 70px;
+}
+
+
+#top-posters-3 {
+    font-size: 32px;
+}
+
+#top-posters-3 img {
+    width: 60px;
+    height: 60px;
+}

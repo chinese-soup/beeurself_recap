@@ -2,8 +2,8 @@ import json
 
 from flask import Flask, render_template
 
-from main import sorted_post_count_per_nickname, GROUPED_BY_MONTHS
-from rofl import sorted_caption_count_per_nickname, posted_on_time_count, posted_late_count
+from rofl import sorted_post_count_per_nickname, sorted_caption_count_per_nickname, posted_on_time_count, posted_late_count
+from rofl import MAX_COUNT_DATE, MAX_COUNT_OF_POSTS
 
 app = Flask(__name__)
 
@@ -25,7 +25,9 @@ GROUPED_BY_MONTHS_AND_NICKS = {}
 
 with open("grouped_by_nicknames_and_by_months.json", "r") as f:
     GROUPED_BY_MONTHS_AND_NICKS = json.load(f)
-print(GROUPED_BY_MONTHS_AND_NICKS)
+
+with open("count_per_day.json", "r") as f:
+    count_per_day = json.load(f)
 
 @app.route("/")
 def index():
@@ -34,9 +36,11 @@ def index():
                            posted_on_time_count=posted_on_time_count,
                            posted_late_count=posted_late_count,
                            GROUPED_BY_MONTHS=GROUPED_BY_MONTHS_AND_NICKS,
+                           COUNT_PER_DATE=count_per_day,
+                           MAX_COUNT_DATE=MAX_COUNT_DATE,
+                           MAX_COUNT_OF_POSTS=MAX_COUNT_OF_POSTS,
                            users=users,
                            )
-
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -7,6 +7,7 @@ from collections import defaultdict, Counter
 from datetime import datetime
 from typing import List, Optional
 from model import Message
+from utils import adjust_timestamp
 
 BOT_NICKNAME = "🐝UrselfBot"
 BOT_USERID = "user5401852593"
@@ -76,7 +77,7 @@ def get_placements(sorted_data):
 def replace_nickname(input_nick):
     users = {
         "Egg": ["Egg", "eggu"],
-        "Chinese_soup": ["Soup", "冰淇淋"],
+        "Soup": ["Soup", "冰淇淋"],
         "Lo1ts": ["nick"],
         "Wakecold": ["Leonid", "Леонид"],
         "Colfra": ["Tamogolfra", "Colfra"],
@@ -151,18 +152,6 @@ for msg_data in messages:
         elif match_justnick:
             nickname = match_justnick.group(1)
 
-        '''if "hey tomsk" in last_text_entity:
-            print(f"""Last = {last_text_entity} |
-            match_non_late_and_caption = {match_non_late_and_caption}
-            match_justnick_late = {match_justnick_late}
-            match_late_and_caption = {match_late_and_caption}
-            match_justnick = {match_justnick}
-            nickname = {nickname}
-            caption = {caption}
-            late_Time = {late_time}
-            """)
-            print(f"{nickname} \t| {message.date} |\t Caption = {caption} |\t Late_time = {late_time}")
-        '''
         print(
             f"{nickname} \t| {message.date} |\t {caption} |\t Late_time = {late_time}"
         )
@@ -191,7 +180,6 @@ HOW_MANY_BEEURSELFS = defaultdict(int)
 CAPTIONS_COUNT_GROUPED_BY = defaultdict(int)
 LIST_OF_ALL_BEEURSELFS_COMBINED = sum(grouped_by_nickname.values(), [])
 
-
 def group_by_months(all_posts: List):
     grouped_by_month_dict = defaultdict(lambda: defaultdict(list))
 
@@ -211,6 +199,19 @@ def group_by_months(all_posts: List):
     # Now, organized_dict contains dicts organized by month
     return grouped_by_month_dict
 
+def group_by_day(all_posts: List):
+    grouped_by_month_dict = defaultdict(lambda: defaultdict(list))
+
+    for d in all_posts:
+        date_obj = d["datetime"]  # Assuming date_obj is a datetime object
+        month = calendar.month_name[date_obj.month]
+        d.pop("datetime")
+        nickname = d["nickdupe"]
+        # Append the dict to the corresponding month key in the organized_dict
+        grouped_by_month_dict[nickname][month].append(d)
+
+    return grouped_by_month_dict
+
 GROUPED_BY_MONTHS = group_by_months(LIST_OF_ALL_BEEURSELFS_COMBINED)
 
 POSTED_LATE = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get('late_time') != '']
@@ -227,6 +228,14 @@ sorted_post_count_per_nickname = get_placements(sorted_post_count_per_nickname)
 sorted_caption_count_per_nickname = get_placements(sorted_caption_count_per_nickname)
 
 
+DATES = [adjust_timestamp(entry) for entry in LIST_OF_ALL_BEEURSELFS_COMBINED]
+COUNT_PER_DATE = {date: DATES.count(date) for date in set(DATES)}
+COUNT_PER_DATE_STR_FORMATTED = {date.strftime("%Y-%-m-%-d"): count for date, count in COUNT_PER_DATE.items()}
+MAX_COUNT_DATE = max(COUNT_PER_DATE, key=COUNT_PER_DATE.get)
+MAX_COUNT_OF_POSTS = COUNT_PER_DATE[MAX_COUNT_DATE]
+# TODO: Get the top posted days
+sorted(COUNT_PER_DATE_STR_FORMATTED.items(), key=lambda x: x[1], reverse=True)
+
 with open("rofl.py", "w") as writef:
     writef.write(f"import datetime")
     writef.write(f"\n\n")
@@ -238,7 +247,12 @@ with open("rofl.py", "w") as writef:
     writef.write("\n\n")
     writef.write(f"posted_on_time_count = {len(POSTED_ON_TIME)}")
     writef.write("\n\n")
-    #writef.write(f"GROUPED_BY_MONTHS = {GROUPED_BY_MONTHS}")
+    writef.write(f"MAX_COUNT_DATE = \"{MAX_COUNT_DATE}\"")
+    writef.write("\n\n")
+    writef.write(f"MAX_COUNT_OF_POSTS = {MAX_COUNT_OF_POSTS}")
 
 with open("grouped_by_nicknames_and_by_months.json", "w") as groupedfp:
     json.dump(GROUPED_BY_MONTHS, groupedfp)
+
+with open("count_per_day.json", "w") as countfp:
+    json.dump(COUNT_PER_DATE_STR_FORMATTED, countfp)

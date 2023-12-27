@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -21,7 +21,12 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
+    <link rel="stylesheet" href="static/heatmap/glanceyear.css">
+    <script src="static/heatmap/jquery.glanceyear.js"></script>
+  
 <body>
 
 <div id="fullpage">
@@ -53,32 +58,25 @@
                     Poopsman community! &#127942;</p>
             </div>
             <div class="container">
-                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
-                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
-                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
-                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
-                <!-- TODO: REPLACE BUTTON with onSectionScrolledTo frm fullageJs or sth -->
-                <!--<button onclick="startFadeIn('section1');">Start Fading</button>-->
-                <div class="row fade-in-paragraph">
-                    <div class="col"><h4>Place</h4></div>
-                    <div class="col"><h4>Nickname</h4></div>
-                    <div class="col"><h4>Number of posted BeeUrselfs</h4></div>
-                </div>
                 {% for place, poster, count in top_posters %}
+
                 <div class="row fade-in-paragraph">
-                    <div class="col">
-                        <!-- medal emoji -->
-                        {% if place > 0 and place < 4 %}&#12935{{ place }};
-                        {% else %}{{ place }}{% endif %}
-                    </div>
-                    <div class="col">
+                    <div class="col" id="top-posters-{{ place }}">
                         <img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"
-                             onerror="this.onerror=null;this.src='static/bee.jpg'">
-                        {{ poster }}
+                             onerror="this.onerror=null; this.src='static/bee.jpg'">
+                        {{ poster }} <!-- medal emoji --> {% if place > 0 and place < 4 %}&#12935{{ place }};{% endif %}
                     </div>
-                    <div class="col">{{ count }}</div>
+
+                    <div class="col" style="padding-bottom: 5%">
+                        <div class="animated-gradient" id="animated-gradient-{{ poster }}" style="margin-top: 20px;">
+                        </div>
+                            {{ count }}
+                    </div>
+
                 </div>
+
                 {% endfor %}
+
         </div>
     </div>
     <div class="section" id="section2">
@@ -86,7 +84,7 @@
             <h2>&#x270D;&#xFE0F; These people really loved captions! ❤️&#x270D;&#xFE0F; </h2>
         </div>
             <table>
-                <thead>
+                <thead class="fade-in-paragraph">
                 <tr>
                     <th>#</th>
                     <th>Avatar</th>
@@ -119,13 +117,21 @@
         </div>
         <div class="section" id="section4">
                 <div class="intro">
-                    <h1 class="dark">Activity per months</h1>
-                    <p class="dark">In <strong>February</strong> we were Beeing Ourselves the most!</p>
+                    <h1 class="dark">Activity over the months</h1>
+                    <p class="dark">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
                 </div>
                 <canvas id="barChartMonthly" width="500"></canvas>
-
-
         </div>
+        <div class="section" id="section5">
+          <div class="intro">
+            <h1>Let's see that map with da heat 🔥</h1>
+            <p>In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
+          </div>
+          
+          <div class="glanceyear-content" id="glanceyear-heatmap">
+          </div>
+        </div>
+
     </div>
 
 </div>
@@ -137,7 +143,7 @@
         // Navigation
         menu: '#menu',
         lockAnchors: false,
-        anchors: ['welcomePage', 'topPosters', 'topCaptions', 'lateOrOnTime', 'topMonths'],
+        anchors: ['welcomePage', 'topPosters', 'topCaptions', 'lateOrOnTime', 'topMonths', 'yearHeatmap'],
         navigation: true,
         navigationPosition: 'right',
         navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users', 'On Time or Late?', 'Top active months'],
@@ -151,12 +157,8 @@
         autoScrolling: true,
         fitToSection: true,
         fitToSectionDelay: 400,
-        scrollBar: false,
         easing: 'easeInOutCubic',
         easingcss3: 'ease',
-        loopBottom: false,
-        loopTop: false,
-        loopHorizontal: true,
         continuousVertical: false,
         continuousHorizontal: false,
         scrollHorizontally: false,
@@ -184,21 +186,10 @@
             '<div class="fp-arrow"></div>  &darr;'
         ],
         verticalCentered: true,
-        sectionsColor: ['#ccc', '#2B2E30', '#7a7677', '#2B2E30', '#ccc',],
+        sectionsColor: ['#ccc', '#2B2E30', '#7a7677', '#2B2E30', '#ccc', '#2B2E30',],
         paddingTop: '3em',
         paddingBottom: '10px',
         fixedElements: '#header, .footer',
-        responsiveWidth: 0,
-        responsiveHeight: 0,
-        responsiveSlides: false,
-        parallax: false,
-        parallaxOptions: {type: 'reveal', percentage: 62, property: 'translate'},
-        dropEffect: false,
-        dropEffectOptions: { speed: 2300, color: '#F82F4D', zIndex: 9999},
-        waterEffect: false,
-        waterEffectOptions: { animateContent: true, animateOnMouseMove: true},
-        cards: false,
-        cardsOptions: {perspective: 100, fadeContent: true, fadeBackground: true},
 
         // Custom selectors
         sectionSelector: '.section',
@@ -224,21 +215,42 @@
     });
 
     function startFadeIn(whichSection) {
+
+        console.log("startFadeIn(", whichSection, ")");
+       
+            var percT = -1.0;
+            {% for place, poster, count in top_posters %}
+                var gradientBox = document.getElementById('animated-gradient-{{ poster }}');
+                if(percT == -1) {
+                    percT = {{ count }} / 100;
+                }
+                gradientBox.classList.add('animate');
+                // 270/2.95/100
+                var widthCalc = {{ count }} / percT;
+                console.log("Mrdat {{ poster }} {{ count }} ", widthCalc, percT);
+                gradientBox.style.width = widthCalc + '%';
+            {% endfor %}
       let paragraphs = $("#" + whichSection).find('.fade-in-paragraph');
       paragraphs.each(function(index) {
         let paragraph = $(this);
         setTimeout(function() {
           paragraph.addClass('fade-in');
-        }, 300 * index);
+        }, 100 * index);
       });
     }
-
 
     const ctxPie = document.getElementById('pieChartLatePosts');
     const ctx = document.getElementById('barChartMonthly');
 
+    const darkModeColors = {
+      backgroundColor: 'rgba(34, 34, 34, 0.8)',
+      borderColor: 'rgba(255, 255, 255, 0.8)',
+      pointBackgroundColor: 'rgba(255, 255, 255, 0.8)',
+      gridLineColor: 'rgba(255, 255, 255, 0.1)',
+      // Add more properties as needed for your specific chart elements
+    };
 
-        new Chart(ctx, {
+    new Chart(ctx, {
         type: 'bar',
         data: {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
@@ -284,31 +296,50 @@
         });
 
         new Chart(ctxPie, {
-        type: 'pie',
-        data: {
-          labels: ['Posted on time', 'Posted late'],
-          datasets: [{
-            label: '# of BeeUrselfs posted',
-            data: [{{ posted_on_time_count }}, {{ posted_late_count }}],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          plugins: {
-            datalabels: {
-              formatter: (value, ctx) => {
-                let sum = ctx.dataset._meta[0].total;
-                let percentage = (value * 100 / sum).toFixed(2) + "%";
-                return percentage;
-              },
-              color: '#fff',
-            },
+          type: 'pie',
+          data: {
+            labels: ['Posted on time', 'Posted late'],
+            datasets: [{
+              label: '# of BeeUrselfs posted',
+              data: [{{ posted_on_time_count }}, {{ posted_late_count }}],
+              borderWidth: 1,
+            }]
           },
-          scales: {
-            y: {
-              beginAtZero: true
-            }
+          options: {
+            plugins: {
+              datalabels: {
+                formatter: (value, ctx) => {
+                  let sum = ctx.dataset._meta[0].total;
+                  let percentage = (value * 100 / sum).toFixed(2) + "%";
+                  return percentage;
+                },
+                color: '#fff',
+              },
+            },
+            legend: {
+              labels: {
+                color: 'white', // Adjust label color here
+              },
+            },
           }
-        }
         });
+
+        var yearDataPerDay = [
+        {% for date, value in COUNT_PER_DATE.items() %}
+            {date: '{{ date }}', value: '{{ value }}'},
+         {% endfor %}
+         ];
+
+    $('#glanceyear-heatmap').glanceyear(yearDataPerDay,{
+      eventClick: function(e) { alert('Date: ' + e.date + ', Count:' + e.count); },
+      months: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      weeks: ['M','T','W','T','F','S', 'S'],
+      targetQuantity: '.glanceyear-quantity',
+      tagId: 'glanceyear-svgTag',
+      showToday: false,
+      today: new Date("2024-01-01")
+      });
+
+    
 </script>
+
