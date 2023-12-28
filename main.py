@@ -44,8 +44,7 @@ Colfra:
 
 """
 
-
-
+# jq ".chats.list[0]" result.json > poopsman.json
 with open("poopsman.json", "r") as f:
     JSON_STR = f.read()
 
@@ -81,7 +80,7 @@ def replace_nickname(input_nick):
         "Lo1ts": ["nick"],
         "Wakecold": ["Leonid", "Леонид"],
         "Colfra": ["Tamogolfra", "Colfra"],
-        "Tomsk": ["Andrei"]
+        "Tomsk": ["Andrei"],
     }
     for main, sublist in users.items():
         if input_nick in sublist:
@@ -103,7 +102,7 @@ for msg_data in messages:
         if len(message.text_entities) == 0:
             continue
         if int(message.date_unixtime) < 1672527600:
-            continue # Skip anything that's before January 2023
+            continue  # Skip anything that's before January 2023
 
         last_text_entity = message.text_entities[-1]["text"]
 
@@ -161,7 +160,14 @@ for msg_data in messages:
         unix_timestamp = float(message.date_unixtime)
         date_obj = datetime.fromtimestamp(unix_timestamp)
 
-        data = {"timestamp": message.date, "unix_ts": unix_timestamp, "datetime": date_obj, "caption": caption, "late_time": late_time, "nickdupe": nickname}
+        data = {
+            "timestamp": message.date,
+            "unix_ts": unix_timestamp,
+            "datetime": date_obj,
+            "caption": caption,
+            "late_time": late_time,
+            "nickdupe": nickname,
+        }
         grouped_by_nickname[nickname].append(data)
 
         # print(message.from_nickname, message.from_id, message.date_unixtime)
@@ -180,6 +186,7 @@ HOW_MANY_BEEURSELFS = defaultdict(int)
 CAPTIONS_COUNT_GROUPED_BY = defaultdict(int)
 LIST_OF_ALL_BEEURSELFS_COMBINED = sum(grouped_by_nickname.values(), [])
 
+
 def group_by_months(all_posts: List):
     grouped_by_month_dict = defaultdict(lambda: defaultdict(list))
 
@@ -193,11 +200,12 @@ def group_by_months(all_posts: List):
 
     # If you want to sort each month's list of dicts by timestamp, you can do this:
 
-    #for month, nicknames in grouped_by_month_dict.items():
-        #   for nickname, values in nicknames.items():
+    # for month, nicknames in grouped_by_month_dict.items():
+    #   for nickname, values in nicknames.items():
     #   grouped_by_month_dict[nickname][month] = sorted(values, key=lambda x: x["unix_ts"])
     # Now, organized_dict contains dicts organized by month
     return grouped_by_month_dict
+
 
 def group_by_day(all_posts: List):
     grouped_by_month_dict = defaultdict(lambda: defaultdict(list))
@@ -212,17 +220,26 @@ def group_by_day(all_posts: List):
 
     return grouped_by_month_dict
 
+
 GROUPED_BY_MONTHS = group_by_months(LIST_OF_ALL_BEEURSELFS_COMBINED)
 
-POSTED_LATE = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get('late_time') != '']
-POSTED_ON_TIME = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get('late_time') == '']
+POSTED_LATE = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get("late_time") != ""]
+POSTED_ON_TIME = [
+    x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get("late_time") == ""
+]
 
 for nickname, list_of_beeurselfs in grouped_by_nickname.items():
     HOW_MANY_BEEURSELFS[nickname] = len(list_of_beeurselfs)
-    CAPTIONS_COUNT_GROUPED_BY[nickname] = sum(1 for b in list_of_beeurselfs if b["caption"] != "")
+    CAPTIONS_COUNT_GROUPED_BY[nickname] = sum(
+        1 for b in list_of_beeurselfs if b["caption"] != ""
+    )
 
-sorted_post_count_per_nickname = list(sorted(HOW_MANY_BEEURSELFS.items(), key=lambda x: x[1], reverse=True))
-sorted_caption_count_per_nickname = list(sorted(CAPTIONS_COUNT_GROUPED_BY.items(), key=lambda x: x[1], reverse=True))
+sorted_post_count_per_nickname = list(
+    sorted(HOW_MANY_BEEURSELFS.items(), key=lambda x: x[1], reverse=True)
+)
+sorted_caption_count_per_nickname = list(
+    sorted(CAPTIONS_COUNT_GROUPED_BY.items(), key=lambda x: x[1], reverse=True)
+)
 
 sorted_post_count_per_nickname = get_placements(sorted_post_count_per_nickname)
 sorted_caption_count_per_nickname = get_placements(sorted_caption_count_per_nickname)
@@ -230,24 +247,33 @@ sorted_caption_count_per_nickname = get_placements(sorted_caption_count_per_nick
 
 DATES = [adjust_timestamp(entry) for entry in LIST_OF_ALL_BEEURSELFS_COMBINED]
 COUNT_PER_DATE = {date: DATES.count(date) for date in set(DATES)}
-COUNT_PER_DATE_STR_FORMATTED = {date.strftime("%Y-%-m-%-d"): count for date, count in COUNT_PER_DATE.items()}
-MAX_COUNT_DATE = max(COUNT_PER_DATE, key=COUNT_PER_DATE.get)
-MAX_COUNT_OF_POSTS = COUNT_PER_DATE[MAX_COUNT_DATE]
+COUNT_PER_DATE_STR_FORMATTED = {
+    date.strftime("%Y-%-m-%-d"): count for date, count in COUNT_PER_DATE.items()
+}
+tmp_max_count_date = max(COUNT_PER_DATE, key=COUNT_PER_DATE.get)
+MAX_COUNT_OF_POSTS = COUNT_PER_DATE[tmp_max_count_date]
+
+MAX_COUNT_ALL_DATES = [date.strftime("%a, %B %d") for date, count in COUNT_PER_DATE.items() if count == MAX_COUNT_OF_POSTS]
+
 # TODO: Get the top posted days
 sorted(COUNT_PER_DATE_STR_FORMATTED.items(), key=lambda x: x[1], reverse=True)
 
 with open("rofl.py", "w") as writef:
     writef.write(f"import datetime")
     writef.write(f"\n\n")
-    writef.write(f"sorted_post_count_per_nickname = {pformat(sorted_post_count_per_nickname)}")
+    writef.write(
+        f"sorted_post_count_per_nickname = {pformat(sorted_post_count_per_nickname)}"
+    )
     writef.write("\n\n")
-    writef.write(f"sorted_caption_count_per_nickname = {pformat(sorted_caption_count_per_nickname)}")
+    writef.write(
+        f"sorted_caption_count_per_nickname = {pformat(sorted_caption_count_per_nickname)}"
+    )
     writef.write("\n\n")
     writef.write(f"posted_late_count = {len(POSTED_LATE)}")
     writef.write("\n\n")
     writef.write(f"posted_on_time_count = {len(POSTED_ON_TIME)}")
     writef.write("\n\n")
-    writef.write(f"MAX_COUNT_DATE = \"{MAX_COUNT_DATE}\"")
+    writef.write(f'MAX_COUNT_ALL_DATES = {MAX_COUNT_ALL_DATES}')
     writef.write("\n\n")
     writef.write(f"MAX_COUNT_OF_POSTS = {MAX_COUNT_OF_POSTS}")
 

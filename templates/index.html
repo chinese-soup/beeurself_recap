@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -26,10 +26,15 @@
     <!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
     <link rel="stylesheet" href="static/heatmap/glanceyear.css">
     <script src="static/heatmap/jquery.glanceyear.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>  
+    <script src="static/bee.js"></script>
+
   
 <body>
-
+<div class="bee" onClick="alert('Hey, back off!');" onmouseover="moveBeeFast();"></div>
 <div id="fullpage">
+
     <div class="section" id="section0">
 
         <img src="static/bee.jpg" alt="Round Image" class="round-image">
@@ -53,7 +58,7 @@
     <div class="section" id="section1">
             <div class="intro fade-in-paragraph">
                 <h2>BeeUrself Top Posters of 2023 </h2>
-                <p>&#127942; Drumroll, please! It's time to celebrate our stellar top posters who've made waves in the
+                <p>&#127942; Drumroll, please! It's time to celebrate our stellar top shitposters who've made waves in the
                     2020
                     Poopsman community! &#127942;</p>
             </div>
@@ -67,7 +72,7 @@
                         {{ poster }} <!-- medal emoji --> {% if place > 0 and place < 4 %}&#12935{{ place }};{% endif %}
                     </div>
 
-                    <div class="col" style="padding-bottom: 5%">
+                    <div class="col" style="padding-bottom: 10px">
                         <div class="animated-gradient" id="animated-gradient-{{ poster }}" style="margin-top: 20px;">
                         </div>
                             {{ count }}
@@ -112,29 +117,43 @@
         <div class="section" id="section3">
             <div>
                 <h1>Posted Late vs Posted on Time</h1>
+                <p>
+                  {{ late_perc }}% of our BeeUrself pics were posted late,
+                    which means only {{ on_time_perc }} % were on time. 
+                </p>
+                <p>
+                  Let's do better next year!
+                </p>
+
                 <canvas id="pieChartLatePosts"></canvas>
             </div>
         </div>
         <div class="section" id="section4">
-                <div class="intro">
-                    <h1 class="dark">Activity over the months</h1>
-                    <p class="dark">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
-                </div>
-                <canvas id="barChartMonthly" width="500"></canvas>
+          <div class="intro">
+              <h1 class="dark" style="text-align: center;">Activity over the months</h1>
+              <p class="dark" style="text-align: center;">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
+          </div>
+          <canvas id="barChartMonthly" style="width: 100%; height: 100%""></canvas>
         </div>
         <div class="section" id="section5">
           <div class="intro">
-            <h1>Let's see that map with da heat 🔥</h1>
-            <p>In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
+            <h1>Let's see that heatmap 🔥</h1>
+            <p>The highest number of people participating in a single day (including folks late by more than 24 hours) is {{ MAX_COUNT_OF_POSTS }}!
+            <p>This has actually happened <strong>{{ MAX_COUNT_ALL_DATES|length }} different days</strong>:</p>
+            <ul>
+              {% for date in MAX_COUNT_ALL_DATES %}
+                <li>{{ date }}</li>
+              {% endfor %}
+            </ul>
           </div>
-          
+
           <div class="glanceyear-content" id="glanceyear-heatmap">
           </div>
         </div>
 
     </div>
 
-</div>
+<!--</div>-->
 </body>
 </html>
 
@@ -147,13 +166,13 @@
         navigation: true,
         navigationPosition: 'right',
         navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users', 'On Time or Late?', 'Top active months'],
-        showActiveTooltip: true,
+        showActiveTooltip: false,
         slidesNavigation: true,
         slidesNavPosition: 'bottom',
 
         // Scrolling
         css3: true,
-        scrollingSpeed: 600,
+        scrollingSpeed: 500,
         autoScrolling: true,
         fitToSection: true,
         fitToSectionDelay: 400,
@@ -161,9 +180,8 @@
         easingcss3: 'ease',
         continuousVertical: false,
         continuousHorizontal: false,
-        scrollHorizontally: false,
         interlockedSlides: false,
-        dragAndMove: false,
+        dragAndMove: true,
         offsetSections: false,
         resetSliders: false,
         fadingEffect: false,
@@ -182,11 +200,11 @@
         // Design
         controlArrows: true,
         controlArrowsHTML: [
-            '<div class="fp-arrow"></div>&uarr;',
-            '<div class="fp-arrow"></div>  &darr;'
+            '&uarr;',
+            '&darr;'
         ],
         verticalCentered: true,
-        sectionsColor: ['#ccc', '#2B2E30', '#7a7677', '#2B2E30', '#ccc', '#2B2E30',],
+        sectionsColor: ['#ccc', 'rgb(23, 26, 28)', '#2B2E30', 'rgb(23, 26, 28)', 'rgb(240, 240, 240)', '#2B2E30',],
         paddingTop: '3em',
         paddingBottom: '10px',
         fixedElements: '#header, .footer',
@@ -197,7 +215,7 @@
 
         lazyLoading: true,
         observer: true,
-        credits: { enabled: true, label: 'Made with fullPage.js', position: 'right'},
+        credits: { enabled: false, label: 'asdasd fullPage.js', position: 'right'},
 
         // Events
 
@@ -215,9 +233,22 @@
     });
 
     function startFadeIn(whichSection) {
+      
 
         console.log("startFadeIn(", whichSection, ")");
-       
+        if(whichSection != "section0") 
+        {
+          var bee = document.querySelector('.bee');
+            if(bee.style.display == "none") {
+            // If we didn't show bee yet, let's do it now. 
+            // We do this for any section that isn't section0 because one can come to the webpage with an anchor link!
+            bee.style.display = 'block';
+            bee.style.top = '50px';
+          }
+        }
+       if(whichSection == "section1") {
+
+
             var percT = -1.0;
             {% for place, poster, count in top_posters %}
                 var gradientBox = document.getElementById('animated-gradient-{{ poster }}');
@@ -230,6 +261,9 @@
                 console.log("Mrdat {{ poster }} {{ count }} ", widthCalc, percT);
                 gradientBox.style.width = widthCalc + '%';
             {% endfor %}
+        } 
+
+      // Fade in all elements that have the fade in class
       let paragraphs = $("#" + whichSection).find('.fade-in-paragraph');
       paragraphs.each(function(index) {
         let paragraph = $(this);
@@ -260,6 +294,7 @@
               {% for nick, items in GROUPED_BY_MONTHS.items() %}
               {              
                 label: "{{ nick }}",
+                borderWidth: 1,
                 data: [
                   {% for month in items %}
                   {
@@ -295,6 +330,25 @@
 
         });
 
+        var pieOptions = {
+          tooltips: {
+            enabled: true
+          },
+          plugins: {
+            datalabels: {
+              formatter: (value, ctx) => {
+
+                let sum = ctx.dataset._meta[0].total;
+                let percentage = (value * 100 / sum).toFixed(2) + "%";
+                return percentage;
+
+
+              },
+              color: '#fff',
+            }
+          }
+        };
+
         new Chart(ctxPie, {
           type: 'pie',
           data: {
@@ -305,23 +359,8 @@
               borderWidth: 1,
             }]
           },
-          options: {
-            plugins: {
-              datalabels: {
-                formatter: (value, ctx) => {
-                  let sum = ctx.dataset._meta[0].total;
-                  let percentage = (value * 100 / sum).toFixed(2) + "%";
-                  return percentage;
-                },
-                color: '#fff',
-              },
-            },
-            legend: {
-              labels: {
-                color: 'white', // Adjust label color here
-              },
-            },
-          }
+          options: pieOptions,
+        
         });
 
         var yearDataPerDay = [

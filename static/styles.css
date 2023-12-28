@@ -104,9 +104,8 @@ h1 {
   }
 }
 
-
 .animate {
-  animation: gradientAnimation 10s ease infinite;
+  animation: gradientAnimation 5s ease infinite;
 }
 
 #top-posters-1 {
@@ -125,7 +124,6 @@ h1 {
     height: 70px;
 }
 
-
 #top-posters-3 {
     font-size: 32px;
 }
@@ -133,4 +131,30 @@ h1 {
 #top-posters-3 img {
     width: 60px;
     height: 60px;
+}
+
+.bee {
+  width: 80px; /* Adjust size as needed */
+  height: 80px; /* Adjust size as needed */
+  position: absolute;
+  top: 50%; /* Start position */
+  left: 50%; /* Start position */
+  background: url('bee_transparent.png') no-repeat center center;
+  background-size: contain;
+  transition: top 2s ease-in-out, left 2s ease-in-out; /* Smooth transition */
+  animation: rotateBee 13s ease infinite; /* Adjust timings as needed */
+  z-index: 500;
+  display: none;
+}
+
+@keyframes rotateBee {
+  0% {
+  transform: translate(-50%, -50%) rotate(0deg);
+  }
+  50% {
+  transform: translate(-50%, -50%) rotate(65deg);
+  }
+  100% {
+  transform: translate(-50%, -50%) rotate(0deg);
+  }
 }
