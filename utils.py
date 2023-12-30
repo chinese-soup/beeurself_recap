@@ -10,10 +10,13 @@ def adjust_timestamp(entry):
     3) it still counts as 2023-01-01
     """
     late_time = entry["late_time"]
-    if late_time != "":
+    if late_time == "":
+        print("No late time")
         return datetime.fromisoformat(entry["timestamp"]).date()
 
     late_delta = timedelta()
+
+    late_time = late_time.replace("late by ", "")
 
     # Parse late_time and add corresponding delta to late_delta
     if 'd' in late_time:

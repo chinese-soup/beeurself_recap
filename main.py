@@ -18,16 +18,15 @@ bot_messages = []
 IDEAS:
 
 Global:
-- Top 3 days when ppl posted the most
 ---- Most ppl posted on <MONDAY/TUESDAY/..etc>
-- Top 3 most reactions
-- Some graphs
---- https://www.chartjs.org/docs/latest/samples/bar/stacked-groups.html
----- TODO: need to expose the real data to JS for these -- mightj ust send it to the template, lmao
---- XKCD Plotlib?
----
---- Heatmap of the year
+- Top 3 most reactions [???? no data]
+- Some graphs [DONE, somewhat]
+- Heatmap of the year [DONE, somewhat]
+--> Days when ppl posted the most [DONE]
+- Days OF WEEK when ppl posted the most
+
 --- How late were you
+-----> WHO WAS LATE THE MOST
 
 Per user:
 -- RECAP CALENDAR --- Heatmap of their postings
@@ -36,7 +35,7 @@ Per user:
 - How on Time were you 
 -- Percentage how on time (graph?)
 -- How top % poster were you (or at least position)
-
+--- WHICH DAY OF WEEK you posted the most
 
 Colfra:
 --- 0% of your beerselfs included your face 
@@ -45,7 +44,8 @@ Colfra:
 """
 
 # jq ".chats.list[0]" result.json > poopsman.json
-with open("poopsman.json", "r") as f:
+# with open("poopsman.json", "r") as f:
+with open("dl28/poopsman.json", "r") as f:
     JSON_STR = f.read()
 
 j = json.loads(JSON_STR)
@@ -81,6 +81,7 @@ def replace_nickname(input_nick):
         "Wakecold": ["Leonid", "Леонид"],
         "Colfra": ["Tamogolfra", "Colfra"],
         "Tomsk": ["Andrei"],
+        "Orange": ["Seth"],
     }
     for main, sublist in users.items():
         if input_nick in sublist:
@@ -94,15 +95,20 @@ for msg_data in messages:
     # print(msg_data)
     try:
         # Creating Message dataclass object
+        if msg_data["type"] != "message":
+            continue
+
         msg_data["from_nickname"] = msg_data.pop("from")
         # We need to pop it off, since we can't use "from" in Python
         message = Message(**msg_data)
 
         #    print("Nice bot, bro", message.text_entities[-1], message.date_unixtime, message.photo)
-        if len(message.text_entities) == 0:
-            continue
+
         if int(message.date_unixtime) < 1672527600:
             continue  # Skip anything that's before January 2023
+
+        if len(message.text_entities) == 0:
+            continue
 
         last_text_entity = message.text_entities[-1]["text"]
 
@@ -167,6 +173,7 @@ for msg_data in messages:
             "caption": caption,
             "late_time": late_time,
             "nickdupe": nickname,
+            "photo": message.photo
         }
         grouped_by_nickname[nickname].append(data)
 
@@ -175,7 +182,7 @@ for msg_data in messages:
     except Exception as e:
         # These are skipped, because BeeUrself bot's messages
         # will always pass, so whatever.
-        # print(f"Missed this message = {e} {msg_data}")
+        print(f"Missed this message = {e} {msg_data}")
         pass
 
 from pprint import pprint, pformat
@@ -255,6 +262,17 @@ MAX_COUNT_OF_POSTS = COUNT_PER_DATE[tmp_max_count_date]
 
 MAX_COUNT_ALL_DATES = [date.strftime("%a, %B %d") for date, count in COUNT_PER_DATE.items() if count == MAX_COUNT_OF_POSTS]
 
+grouped_by_dates = defaultdict(list)
+
+
+for entry in LIST_OF_ALL_BEEURSELFS_COMBINED:
+    adjusted_ts = adjust_timestamp(entry).strftime("%Y-%-m-%-d")
+    entry["adjusted_timestamp"] = adjusted_ts
+    grouped_by_dates[adjusted_ts].append(entry)
+
+grouped_by_dates = dict(grouped_by_dates)
+
+
 # TODO: Get the top posted days
 sorted(COUNT_PER_DATE_STR_FORMATTED.items(), key=lambda x: x[1], reverse=True)
 
@@ -276,9 +294,14 @@ with open("rofl.py", "w") as writef:
     writef.write(f'MAX_COUNT_ALL_DATES = {MAX_COUNT_ALL_DATES}')
     writef.write("\n\n")
     writef.write(f"MAX_COUNT_OF_POSTS = {MAX_COUNT_OF_POSTS}")
+    writef.write("\n\n")
+    writef.write(f"grouped_by_dates = {grouped_by_dates}")
 
 with open("grouped_by_nicknames_and_by_months.json", "w") as groupedfp:
     json.dump(GROUPED_BY_MONTHS, groupedfp)
 
 with open("count_per_day.json", "w") as countfp:
     json.dump(COUNT_PER_DATE_STR_FORMATTED, countfp)
+
+#with open("grouped_by_dates.json", "w") as bydatefp:
+#    json.dump(grouped_by_dates, bydatefp)

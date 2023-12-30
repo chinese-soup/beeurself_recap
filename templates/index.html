@@ -18,20 +18,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    <script src="static/jquery/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <script src="static/chart.js"></script>
+
     <!--<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
     <link rel="stylesheet" href="static/heatmap/glanceyear.css">
     <script src="static/heatmap/jquery.glanceyear.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>  
+
+    <script src="static/chartjs-plugin-datalabels.js"></script>
     <script src="static/bee.js"></script>
 
-  
+
 <body>
+  <noscript>
+    <h1>Please enable JavaScript for this website, ISTG, I am not collecting your data lmao,
+      besides, you are literally looking at all the data collected on Telegram lmao</h1>
+  </noscript>
 <div class="bee" onClick="alert('Hey, back off!');" onmouseover="moveBeeFast();"></div>
 <div id="fullpage">
 
@@ -116,30 +120,30 @@
         </div>
         <div class="section" id="section3">
             <div>
-                <h1>Posted Late vs Posted on Time</h1>
-                <p>
-                  {{ late_perc }}% of our BeeUrself pics were posted late,
-                    which means only {{ on_time_perc }} % were on time. 
+                <h1 class="fade-in-paragraph">&#x23F0; On Time or Late &#x1F55D; ?</h1>
+                <p class="fade-in-paragraph">
+                  <strong>{{ late_perc }}%</strong> of our BeeUrself pics were <strong style="color: #ff6384">posted late</strong>,
+                    which means only {{ on_time_perc }}% were <strong style="color: #36a2eb">on time</strong>.
                 </p>
-                <p>
+                <p class="fade-in-paragraph">
                   Let's do better next year!
                 </p>
 
-                <canvas id="pieChartLatePosts"></canvas>
+                <canvas class="fade-in-paragraph" id="pieChartLatePosts"></canvas>
             </div>
         </div>
         <div class="section" id="section4">
           <div class="intro">
-              <h1 class="dark" style="text-align: center;">Activity over the months</h1>
-              <p class="dark" style="text-align: center;">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
+              <h1 style="text-align: center;">Activity over the months</h1>
+              <p style="text-align: center;">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
           </div>
-          <canvas id="barChartMonthly" style="width: 100%; height: 100%""></canvas>
+          <canvas id="barChartMonthly" style="width: 70vw; height: 50vh; display: block;""></canvas>
         </div>
         <div class="section" id="section5">
           <div class="intro">
             <h1>Let's see that heatmap 🔥</h1>
-            <p>The highest number of people participating in a single day (including folks late by more than 24 hours) is {{ MAX_COUNT_OF_POSTS }}!
-            <p>This has actually happened <strong>{{ MAX_COUNT_ALL_DATES|length }} different days</strong>:</p>
+            <p>The highest number of people participating in a single day (including folks late by more than 24 hours) was {{ MAX_COUNT_OF_POSTS }}!
+            <p>This has actually happened on <strong>{{ MAX_COUNT_ALL_DATES|length }} different days</strong>:</p>
             <ul>
               {% for date in MAX_COUNT_ALL_DATES %}
                 <li>{{ date }}</li>
@@ -149,6 +153,12 @@
 
           <div class="glanceyear-content" id="glanceyear-heatmap">
           </div>
+            <p id="postedThatDay">Click on any day to see what's been posted on that day!</p>
+
+            <div class="day card-container" id="targetDay">
+          
+            </div>
+
         </div>
 
     </div>
@@ -184,18 +194,12 @@
         dragAndMove: true,
         offsetSections: false,
         resetSliders: false,
-        fadingEffect: false,
         normalScrollElements: '#element1, .element2',
         scrollOverflow: true,
         scrollOverflowMacStyle: false,
         scrollOverflowReset: false,
         touchSensitivity: 15,
         bigSectionsDestination: null,
-
-        // Accessibility
-        keyboardScrolling: true,
-        animateAnchor: true,
-        recordHistory: true,
 
         // Design
         controlArrows: true,
@@ -204,7 +208,7 @@
             '&darr;'
         ],
         verticalCentered: true,
-        sectionsColor: ['#ccc', 'rgb(23, 26, 28)', '#2B2E30', 'rgb(23, 26, 28)', 'rgb(240, 240, 240)', '#2B2E30',],
+        sectionsColor: ['#ccc', 'rgb(23, 26, 28)', '#2B2E30', 'rgb(23, 26, 28)', '#2B2E30', '#2B2E30',],
         paddingTop: '3em',
         paddingBottom: '10px',
         fixedElements: '#header, .footer',
@@ -239,16 +243,16 @@
         if(whichSection != "section0") 
         {
           var bee = document.querySelector('.bee');
-            if(bee.style.display == "none") {
-            // If we didn't show bee yet, let's do it now. 
-            // We do this for any section that isn't section0 because one can come to the webpage with an anchor link!
-            bee.style.display = 'block';
-            bee.style.top = '50px';
-          }
+            console.log("bee style = ", bee.style);
+            
+              if(bee.style.display == "") {
+              // If we didn't show bee yet, let's do it now. 
+              // We do this for any section that isn't section0 because one can come to the webpage with an anchor link!
+              bee.style.display = 'block';
+              bee.style.top = '50px';
+            }
         }
        if(whichSection == "section1") {
-
-
             var percT = -1.0;
             {% for place, poster, count in top_posters %}
                 var gradientBox = document.getElementById('animated-gradient-{{ poster }}');
@@ -283,18 +287,17 @@
       gridLineColor: 'rgba(255, 255, 255, 0.1)',
       // Add more properties as needed for your specific chart elements
     };
-
+    Chart.defaults.color = 'white';
     new Chart(ctx, {
         type: 'bar',
         data: {
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October',
           'November', 'December'],
           datasets: [
-             
               {% for nick, items in GROUPED_BY_MONTHS.items() %}
               {              
                 label: "{{ nick }}",
-                borderWidth: 1,
+                borderWidth: 0,
                 data: [
                   {% for month in items %}
                   {
@@ -313,15 +316,21 @@
             y: {
               beginAtZero: true,
               stacked: true,
+              grid: {
+                  color: 'rgba(128, 128, 128, 0.5)'
+              },
             },
             x: {
               stacked: true,
+              grid: {
+                  color: 'rgba(128, 128, 128, 0.5)'
+              },
             }
           },
           plugins: {
             legend: {
                 labels: {
-                    color: "black",
+                    color: "white",
                 }
             }
           },
@@ -369,9 +378,71 @@
          {% endfor %}
          ];
 
+         function getDataForDate(e) {
+          var inputDate = e.date;
+          if(typeof(e) == "string") {
+            inputDate = e;
+          }
+            console.log('Date: ' + e.date + ', Count:' + e.count)
+
+            var datePrev = new Date(inputDate); 
+            var dateNext = new Date(inputDate); 
+            datePrev.setDate(datePrev.getDate() - 1);
+            dateNext.setDate(dateNext.getDate() + 1);
+
+            var year = datePrev.getFullYear();
+            var month = datePrev.getMonth() + 1;
+            var day = datePrev.getDate();
+            var datePrevStr = year + "-" + month + "-" + day;
+
+            var year = dateNext.getFullYear();
+            var month = dateNext.getMonth() + 1;
+            var day = dateNext.getDate();
+            var dateNextStr = year + "-" + month + "-" + day;
+
+
+          $.getJSON('by_date/' + inputDate, function(data) {
+            var targetElement = document.getElementById("targetDay")
+            var postedThatDayElement = document.getElementById("postedThatDay")
+
+
+            targetElement.innerHTML = "";
+            if (data.length != 0)
+            {
+                postedThatDay.innerHTML = `These were posted on <strong>${inputDate}</strong>:`
+                postedThatDay.innerHTML += `<br>
+                <span style="text-align: center; display: flex; flex-columns: 1; justify-content: center;">
+                  <button class="btn btn-primary" onclick="getDataForDate('${datePrevStr}');">Previous day</button> 
+                  &nbsp; <button class="btn btn-primary" onclick="getDataForDate('${dateNextStr}');"> Next day</button>
+                </span>`
+
+                data.forEach(function(post, index) 
+                {
+                  console.log(post);
+                  lateTime = post.late_time ? ` (late by ${post.late_time})` : '';
+                
+                  targetElement.innerHTML += `
+                    <div class="card">
+                      <a href="static/${post.photo}" target="_blank"><img class='beeurself' src='static/${post.photo}'></a>
+                      <div class='nametag'>
+                        ${post.nickdupe} <small>${lateTime}</small>
+                      </div>
+                    </div>
+                `;
+                })
+            }
+            else {
+              targetElement.innerHTML = `No posts on ${inputDate} unfortunately. :(`
+            }
+
+        });
+         }
+
     $('#glanceyear-heatmap').glanceyear(yearDataPerDay,{
-      eventClick: function(e) { alert('Date: ' + e.date + ', Count:' + e.count); },
-      months: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      eventClick: function(e) {
+        getDataForDate(e)
+       },
+      months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       weeks: ['M','T','W','T','F','S', 'S'],
       targetQuantity: '.glanceyear-quantity',
       tagId: 'glanceyear-svgTag',

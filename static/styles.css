@@ -55,7 +55,6 @@ th {
 .section {
   justify-content: center;
   align-items: center;
-  /*background-color: rgb(43, 46, 48) !important;*/
   color: white;
 }
 
@@ -158,3 +157,43 @@ h1 {
   transform: translate(-50%, -50%) rotate(0deg);
   }
 }
+
+#postedThatDay {
+  font-size: 24px;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap; 
+  width: 700px;
+  gap: 8px;
+  justify-content: center;
+}
+
+.card {
+  width: 25%; /* Set your desired width */
+  border-radius: 15px; /* Rounded corners */
+  overflow: hidden; /* Clip overflow content */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle effect */
+  margin: 2px;
+  height: auto;
+  display: block !important;
+}
+
+.card img {
+  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure the image covers the entire container */
+}
+
+.nametag {
+  background-color: rgba(20, 20, 20, 0.8); /* Background color for nametag */
+  color: white;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 15px; /* Adjust positioning as needed */
+  width: 100%;
+  text-align: left;
+}
+
