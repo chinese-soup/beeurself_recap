@@ -160,6 +160,12 @@
             </div>
 
         </div>
+        <div class="section" id="section6">
+          <div class="intro">
+              <h1 style="text-align: center;">Activity over the months</h1>
+              <p style="text-align: center;">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
+          </div>
+        </div>
 
     </div>
 
@@ -433,6 +439,14 @@
             }
             else {
               targetElement.innerHTML = `No posts on ${inputDate} unfortunately. :(`
+
+              postedThatDay.innerHTML = ``
+              postedThatDay.innerHTML += `<br>
+                <span style="text-align: center; display: flex; flex-columns: 1; justify-content: center;">
+                  <button class="btn btn-primary" onclick="getDataForDate('${datePrevStr}');">Previous day</button> 
+                  &nbsp; <button class="btn btn-primary" onclick="getDataForDate('${dateNextStr}');"> Next day</button>
+                </span>`
+
             }
 
         });
