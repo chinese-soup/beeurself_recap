@@ -3,7 +3,7 @@ import json
 from flask import Flask, render_template, jsonify
 
 from rofl import sorted_post_count_per_nickname, sorted_caption_count_per_nickname, posted_on_time_count, \
-    posted_late_count, grouped_by_dates
+    posted_late_count, grouped_by_dates, first_dt_per_nickname
 from rofl import MAX_COUNT_ALL_DATES, MAX_COUNT_OF_POSTS
 
 import math
@@ -25,12 +25,16 @@ users = {
 }
 
 GROUPED_BY_MONTHS_AND_NICKS = {}
+GROUPED_BY_DAYS_OF_THE_WEEK = {}
 
 with open("grouped_by_nicknames_and_by_months.json", "r") as f:
     GROUPED_BY_MONTHS_AND_NICKS = json.load(f)
 
 with open("count_per_day.json", "r") as f:
     count_per_day = json.load(f)
+
+with open("grouped_by_weekdays.json", "r") as byweekdayfp:
+    GROUPED_BY_DAYS_OF_THE_WEEK = json.load(byweekdayfp)
 
 #with open("grouped_by_dates.json", "r") as bydate:
 #    grouped_by_dates = json.load(f)
@@ -53,6 +57,8 @@ def index():
                            users=users,
                            on_time_perc=on_time_perc,
                            late_perc=late_perc,
+                           GROUPED_BY_DAYS_OF_THE_WEEK=GROUPED_BY_DAYS_OF_THE_WEEK,
+                           first_dt_per_nickname=first_dt_per_nickname,
                            )
 
 @app.route("/by_date/<date>")
@@ -65,4 +71,4 @@ def by_date(date):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="127.0.0.1", port=8888, debug=True)

@@ -4,6 +4,7 @@ import json
 import re
 import sys
 from collections import defaultdict, Counter
+from copy import copy, deepcopy
 from datetime import datetime
 from typing import List, Optional
 from model import Message
@@ -44,15 +45,15 @@ Colfra:
 """
 
 # jq ".chats.list[0]" result.json > poopsman.json
-# with open("poopsman.json", "r") as f:
-with open("dl28/poopsman.json", "r") as f:
+with open("poopsman.json", "r") as f:
+#with open("dl28/poopsman.json", "r") as f:
     JSON_STR = f.read()
 
 j = json.loads(JSON_STR)
 messages = j.get("messages")
 
 grouped_by_nickname = defaultdict(list)
-
+ffmpegfp = open("ffmpeg-input.txt", "w")
 
 def get_placements(sorted_data):
     placements = {}
@@ -90,6 +91,7 @@ def replace_nickname(input_nick):
 
     return input_nick  # Fall back to original nickname, if we didn't find a replacement
 
+idx = 0
 
 for msg_data in messages:
     # print(msg_data)
@@ -106,6 +108,9 @@ for msg_data in messages:
 
         if int(message.date_unixtime) < 1672527600:
             continue  # Skip anything that's before January 2023
+
+        if int(message.date_unixtime) > 1704118214:
+            continue  # Skip anything that's after 1st of January 2024 14:10 UTC
 
         if len(message.text_entities) == 0:
             continue
@@ -177,6 +182,10 @@ for msg_data in messages:
         }
         grouped_by_nickname[nickname].append(data)
 
+        # ffmpegfp.write(f"file '{photo}'\n")
+        ffmpegfp.write(f"cp 'static/{message.photo}' bla/{idx:05}.jpg\n")
+        idx += 1
+
         # print(message.from_nickname, message.from_id, message.date_unixtime)
 
     except Exception as e:
@@ -185,6 +194,7 @@ for msg_data in messages:
         print(f"Missed this message = {e} {msg_data}")
         pass
 
+ffmpegfp.close()
 from pprint import pprint, pformat
 
 pprint(grouped_by_nickname)
@@ -192,6 +202,32 @@ pprint(grouped_by_nickname)
 HOW_MANY_BEEURSELFS = defaultdict(int)
 CAPTIONS_COUNT_GROUPED_BY = defaultdict(int)
 LIST_OF_ALL_BEEURSELFS_COMBINED = sum(grouped_by_nickname.values(), [])
+
+grouped_by_nickname_for_dt = deepcopy(grouped_by_nickname)
+
+first_dt_per_nickname = defaultdict(lambda: None)
+since_date = datetime(2023, 1, 1)
+
+for nickname, datetimes_list in grouped_by_nickname_for_dt.items():
+    first_datetime = None
+    for entry in datetimes_list:
+        dt = entry['datetime']
+        if dt >= since_date and (first_datetime is None or dt < first_datetime):
+            first_datetime = dt
+    first_dt_per_nickname[nickname] = first_datetime
+
+first_dt_per_nickname = dict(first_dt_per_nickname)
+
+# ffmpeg bs
+photos_list = []
+for post in LIST_OF_ALL_BEEURSELFS_COMBINED:
+    photos_list.append(post["photo"])
+
+photos_list.sort()
+"""with open("ffmpeg-input.txt", "w") as ffmpegfp:
+    for photo in photos_list:
+        #ffmpegfp.write(f"file '{photo}'\n")
+        ffmpegfp.write(f"cp '{photo}' bla/\n")"""
 
 
 def group_by_months(all_posts: List):
@@ -215,20 +251,23 @@ def group_by_months(all_posts: List):
 
 
 def group_by_day(all_posts: List):
-    grouped_by_month_dict = defaultdict(lambda: defaultdict(list))
+    grouped_by_day_dict = defaultdict(lambda: defaultdict(list))
 
     for d in all_posts:
         date_obj = d["datetime"]  # Assuming date_obj is a datetime object
-        month = calendar.month_name[date_obj.month]
+        day_of_week = date_obj.strftime("%A")  # Get the day name from the date
         d.pop("datetime")
         nickname = d["nickdupe"]
-        # Append the dict to the corresponding month key in the organized_dict
-        grouped_by_month_dict[nickname][month].append(d)
+        # Append the dict to the corresponding day key in the organized_dict
+        grouped_by_day_dict[nickname][day_of_week].append(d)
 
-    return grouped_by_month_dict
+    return grouped_by_day_dict
 
+LIST_OF_ALL_BEEURSELFS_COMBINED_COPY = deepcopy(LIST_OF_ALL_BEEURSELFS_COMBINED) # lazy fix for deleting datetime in group_by_months
 
 GROUPED_BY_MONTHS = group_by_months(LIST_OF_ALL_BEEURSELFS_COMBINED)
+
+GROUPED_BY_DAYS_OF_THE_WEEK = group_by_day(LIST_OF_ALL_BEEURSELFS_COMBINED_COPY)
 
 POSTED_LATE = [x for x in LIST_OF_ALL_BEEURSELFS_COMBINED if x.get("late_time") != ""]
 POSTED_ON_TIME = [
@@ -296,6 +335,9 @@ with open("rofl.py", "w") as writef:
     writef.write(f"MAX_COUNT_OF_POSTS = {MAX_COUNT_OF_POSTS}")
     writef.write("\n\n")
     writef.write(f"grouped_by_dates = {grouped_by_dates}")
+    writef.write("\n\n")
+    writef.write(f"first_dt_per_nickname = {first_dt_per_nickname}")
+    writef.write("\n\n")
 
 with open("grouped_by_nicknames_and_by_months.json", "w") as groupedfp:
     json.dump(GROUPED_BY_MONTHS, groupedfp)
@@ -303,5 +345,5 @@ with open("grouped_by_nicknames_and_by_months.json", "w") as groupedfp:
 with open("count_per_day.json", "w") as countfp:
     json.dump(COUNT_PER_DATE_STR_FORMATTED, countfp)
 
-#with open("grouped_by_dates.json", "w") as bydatefp:
-#    json.dump(grouped_by_dates, bydatefp)
+with open("grouped_by_weekdays.json", "w") as bydatefp:
+    json.dump(GROUPED_BY_DAYS_OF_THE_WEEK, bydatefp)

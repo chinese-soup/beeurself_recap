@@ -5,18 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BeeUrself 2023</title>
     <link rel="stylesheet" href="static/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.css"
-          integrity="sha512-wCVOuVtxsXqrQK7tj9j4BvyfITQmpp7UE7mVilD7aieGLYFEIAa5UKTP1RapOf6dxQ9JIKAneakcyykWG4r4Ow=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.20/fullpage.min.js"
-            integrity="sha512-LGiXf+jHGTHcIybSsOWO3I/in+OObCkcEsWIZ7IyhzfD6RzD5qDUw2CK+JveuI7zTSEcDG//bIOvOpAJW2BWsg=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-            crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/fullpagejs/fullpage.css">
+    <script src="static/fullpagejs/fullpage.min.js"></script>
+
+    <script src="static/bootstrap-5.3.2-dist/js/bootstrap.bundle.min.js"></script>
+    <link href="static/bootstrap-5.3.2-dist//css/bootstrap.min.css" rel="stylesheet">
 
     <script src="static/jquery/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -105,7 +99,7 @@
                 {% for place, poster, count in top_captions %}
                 {% if count != 0 %}
                 <tr class="fade-in-paragraph">
-                    <td>{{ place }}</td>
+                    <td><strong>{{ place }}</strong></td>
                     <td>  <img src="static/avatars/{{ poster }}.jpg" alt="Avatar" class="avatar"
                              onerror="this.onerror=null;this.src='static/bee.jpg'"></td>
                     <td>{{ poster }}</td>
@@ -132,14 +126,23 @@
                 <canvas class="fade-in-paragraph" id="pieChartLatePosts"></canvas>
             </div>
         </div>
+
         <div class="section" id="section4">
           <div class="intro">
-              <h1 style="text-align: center;">Activity over the months</h1>
-              <p style="text-align: center;">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
+              <h1 style="text-align: center;">Activity during the week</h1>
+              <p style="text-align: center;">Peeps usually posted the most on <strong>Wednesdays</strong></p>
           </div>
-          <canvas id="barChartMonthly" style="width: 70vw; height: 50vh; display: block;""></canvas>
+          <canvas id="barChartWeek" style="width: 70vw; height: 50vh; display: block;""></canvas>
         </div>
         <div class="section" id="section5">
+          <div class="intro">
+              <h1 style="text-align: center;">Activity over the months</h1>
+              <p style="text-align: center;">In <strong>December</strong> we were Beeing Ourselves the most, with 151 total posts!</p>
+          </div>
+          <canvas id="barChartMonthly" style="width: 70vw; height: 50vh; display: block;""></canvas>
+          <p style="font-style:italic">TIP: You can click on the legend to toggle showing specific people's contribution.</p>
+        </div>
+        <div class="section" id="section6">
           <div class="intro">
             <h1>Let's see that heatmap 🔥</h1>
             <p>The highest number of people participating in a single day (including folks late by more than 24 hours) was {{ MAX_COUNT_OF_POSTS }}!
@@ -158,15 +161,34 @@
             <div class="day card-container" id="targetDay">
           
             </div>
-
         </div>
-        <div class="section" id="section6">
-          <div class="intro">
-              <h1 style="text-align: center;">Activity over the months</h1>
-              <p style="text-align: center;">In <strong>October</strong> we were Beeing Ourselves the most, with 126 total posts!</p>
-          </div>
+        <div class="section" id="section7">
+            <div class="intro">
+                <h2>&#128104;&zwj;&#128188; New joiners &#127881;</h2>
+                <p>Some people only joined us later in the year!</p>
+                <p style="padding-bottom: 50px;">We thank them for deciding to <strong>BeeThemselves</strong> with us this year!</p>
+                {% for nickname, val in first_dt_per_nickname.items() %}
+                    {% set bla = val.strftime("%m") %}
+                    {% if bla != "01" %}
+                    <p> <img src="static/avatars/{{ nickname }}.jpg" alt="Avatar" class="avatar"
+                             onerror="this.onerror=null; this.src='static/bee.jpg'">
+                    <strong>{{ nickname }}</strong>'s first post was on {{ val.strftime("%Y-%m-%d") }}!</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
-
+        <div class="section" id="section8">
+            <div class="intro">
+                <h1>Well, that's a wrap. &#127873;</h1>
+                <p>I had many more ideas, but I failed to deliver them, like always.</p>
+                <p>Thanks for another amazing year at <strong>Poops man</strong> and let's have a great new year! :)
+                </p>
+                <video width="50%" controls autoplay>
+                  <source src="static/beeurself_final.mp4" type="video/mp4" >
+                </video>
+                <p style="padding-top: 50px;""><i>BTW: Colfra posted 0 BeeUrselfs with his face.</i></p>
+            </div>
+        </div>
     </div>
 
 <!--</div>-->
@@ -178,10 +200,10 @@
         // Navigation
         menu: '#menu',
         lockAnchors: false,
-        anchors: ['welcomePage', 'topPosters', 'topCaptions', 'lateOrOnTime', 'topMonths', 'yearHeatmap'],
+        anchors: ['welcomePage', 'topPosters', 'topCaptions', 'lateOrOnTime', 'weekGraphs', 'topMonths', 'yearHeatmap', 'newJoiners', 'ending'],
         navigation: true,
         navigationPosition: 'right',
-        navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users', 'On Time or Late?', 'Top active months'],
+        navigationTooltips: ['Welcome', 'Top posters', 'Top /caption users', 'On Time or Late?', 'Top active months', 'Top days of week'],
         showActiveTooltip: false,
         slidesNavigation: true,
         slidesNavPosition: 'bottom',
@@ -214,7 +236,7 @@
             '&darr;'
         ],
         verticalCentered: true,
-        sectionsColor: ['#ccc', 'rgb(23, 26, 28)', '#2B2E30', 'rgb(23, 26, 28)', '#2B2E30', '#2B2E30',],
+        sectionsColor: ['#ccc', 'rgb(23, 26, 28)', '#2B2E30', 'rgb(23, 26, 28)', '#2B2E30', '#2B2E30', 'rgb(23, 26, 28)', '#2B2E30', 'rgb(23, 26, 28)',],
         paddingTop: '3em',
         paddingBottom: '10px',
         fixedElements: '#header, .footer',
@@ -225,7 +247,7 @@
 
         lazyLoading: true,
         observer: true,
-        credits: { enabled: false, label: 'asdasd fullPage.js', position: 'right'},
+        credits: { enabled: false, label: 'thanks, fullpagejs', position: 'right'},
 
         // Events
 
@@ -243,8 +265,6 @@
     });
 
     function startFadeIn(whichSection) {
-      
-
         console.log("startFadeIn(", whichSection, ")");
         if(whichSection != "section0") 
         {
@@ -285,7 +305,8 @@
 
     const ctxPie = document.getElementById('pieChartLatePosts');
     const ctx = document.getElementById('barChartMonthly');
-
+    const ctxWeek = document.getElementById('barChartWeek');
+  
     const darkModeColors = {
       backgroundColor: 'rgba(34, 34, 34, 0.8)',
       borderColor: 'rgba(255, 255, 255, 0.8)',
@@ -293,6 +314,57 @@
       gridLineColor: 'rgba(255, 255, 255, 0.1)',
       // Add more properties as needed for your specific chart elements
     };
+
+
+    new Chart(ctxWeek, {
+        type: 'bar',
+        data: {
+          labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          datasets: [
+              {% for nick, items in GROUPED_BY_DAYS_OF_THE_WEEK.items() %}
+              {              
+                label: "{{ nick }}",
+                borderWidth: 0,
+                data: [
+                  {% for month in items %}
+                  {
+                    x: '{{ month }}',
+                    y: '{{ items[month]|length  }}',
+                  },
+                  {% endfor %}
+                ],
+              },
+              {% endfor %}
+                
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              stacked: true,
+              grid: {
+                  color: 'rgba(128, 128, 128, 0.5)'
+              },
+            },
+            x: {
+              stacked: true,
+              grid: {
+                  color: 'rgba(128, 128, 128, 0.5)'
+              },
+            }
+          },
+          plugins: {
+            legend: {
+                labels: {
+                    color: "white",
+                }
+            }
+          },
+          responsive: true,
+        },
+        });
+
     Chart.defaults.color = 'white';
     new Chart(ctx, {
         type: 'bar',
@@ -342,9 +414,7 @@
           },
           responsive: true,
         },
-
         });
-
         var pieOptions = {
           tooltips: {
             enabled: true
@@ -363,7 +433,6 @@
             }
           }
         };
-
         new Chart(ctxPie, {
           type: 'pie',
           data: {
